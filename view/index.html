@@ -29,7 +29,8 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="attraction.html">Attraction</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="review.html">Review</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="signin.html">Sign in</a></li>
+                        <li class="nav-item"><a id="nav-signin" class="nav-link px-lg-3 py-3 py-lg-4" href="signin.html">Sign in</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -149,5 +150,77 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Function to get a specific cookie by name
+                function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+    
+                // Retrieve token from cookie
+                const token = getCookie('token');
+                console.log('Token retrieved in index.html:', token);
+    
+                // Update the navigation link based on token presence
+                const signinLink = document.getElementById('nav-signin');
+                if (token) {
+                    signinLink.textContent = 'Account'; // Example: Change text to "Profile"
+                    signinLink.href = 'account.html'; // Example: Change href to profile page
+                } else {
+                    signinLink.textContent = 'Sign in'; // Reset to "Sign in" if token is absent
+                    signinLink.href = 'signin.html'; // Example: Reset href to signin page
+                }
+    
+                // Use the token in subsequent requests (e.g., fetch data from server)
+                if (token) {
+                    fetch('/api/data', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Failed to fetch data');
+                        } 
+                    })
+                    .then(data => {
+                        console.log('Data fetched successfully:', data);
+                        // Handle data accordingly (e.g., update UI)
+                        // Example: Update the UI with fetched data
+                        const postsContainer = document.getElementById('posts-container');
+                        if (data && data.posts) {
+                            data.posts.forEach(post => {
+                                const postElement = document.createElement('div');
+                                postElement.innerHTML = `
+                                    <div class="post-preview">
+                                        <a href="post.html">
+                                            <h2 class="post-title">${post.title}</h2>
+                                            <h3 class="post-subtitle">${post.subtitle}</h3>
+                                        </a>
+                                        <p class="post-meta">
+                                            Posted by
+                                            <a href="#!">${post.author}</a>
+                                            on ${post.date}
+                                        </p>
+                                    </div>
+                                    <hr class="my-4" />
+                                `;
+                                postsContainer.appendChild(postElement);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        // Handle error
+                    });
+
+                }
+            });
+        </script>
     </body>
 </html>

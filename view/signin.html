@@ -51,7 +51,7 @@
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="attraction.html">Attraction</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="review.html">Review</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="signin.html">Sign in</a></li>
+                    <li class="nav-item"><a id="nav-signin" class="nav-link px-lg-3 py-3 py-lg-4" href="signin.html">Sign in</a></li>
                 </ul>
             </div>
         </div>
@@ -157,11 +157,19 @@
                 });
 
                 if (response.ok) {
-                    // Handle successful sign-in
                     const result = await response.json();
-                    document.cookie = `token=${result.token}; max-age=${60 * 60}; path=/;`; // Set token as a cookie for 1 hour
-                    alert("Sign-in successful!");
-                    window.location.href = 'index.html'; // Redirect to the home page
+
+                    // Check if the response contains necessary fields
+                    if (result.success && result.token) {
+                        // Set token as a cookie for 1 hour
+                        document.cookie = `token=${result.token}; max-age=${60 * 60}; path=/;`;
+                        console.log('Sign-in successful! Token:', result.token);
+                        alert("Sign in successful!")
+                        window.location.href = 'index.html'; // Redirect to the home page
+                    } else {
+                        console.error('Invalid response format:', result);
+                        alert('Sign-in failed. Invalid server response.');
+                    }
                 } else {
                     // Handle errors
                     const errorData = await response.json();
@@ -172,6 +180,7 @@
                 alert('An error occurred. Please try again.');
             }
         }
+
     </script>
 </body>
 </html>
