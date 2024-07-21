@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Clean Blog - Start Bootstrap Theme</title>
+        <title>Touring in Slovenia</title>
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -14,6 +14,43 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <style>
+            .image-container {
+                position: relative;
+                text-align: center;
+            }
+            .image-container img {
+                width: 100%;
+                height: 225px;
+                display: block;
+            }
+            .text-overlay {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+            }
+            .card {
+                display: flex;
+                flex-direction: column;
+                height: 95%;
+            }
+            .card-body {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
+            .card-text {
+                flex-grow: 1;
+            }
+            .col-md-4 {
+                padding-bottom: 30px;
+            }
+        </style>
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
     </head>
     <body>
         <!-- Navigation-->
@@ -24,73 +61,209 @@
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="attraction.html">Attraction</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="review.html">Review</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="signin.html">Sign in</a></li>
-                    </ul>
-                </div>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="attraction.html">Attraction</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="review.html" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Review
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="review.html">All review</a>
+                            <a class="dropdown-item" href="addpost.html">Add post</a>
+                          </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="signin.html">Sign in</a>
+                          </li>
+                      </ul>
+                    </div>
+                  </nav>
             </div>
         </nav>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
+        <header class="masthead" style="background-image: url('assets/img/slovenia_map.png')"> 
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="page-heading">
-                            <h1>About Me</h1>
-                            <span class="subheading">This is what I do.</span>
+                            <h2>Attractions & facilities</h2>
+                            <span class="subheading">Where you should go when in Slovenia</span>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
+    </body>
         <!-- Main Content-->
         <main class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe nostrum ullam eveniet pariatur voluptates odit, fuga atque ea nobis sit soluta odio, adipisci quas excepturi maxime quae totam ducimus consectetur?</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius praesentium recusandae illo eaque architecto error, repellendus iusto reprehenderit, doloribus, minus sunt. Numquam at quae voluptatum in officia voluptas voluptatibus, minus!</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut consequuntur magnam, excepturi aliquid ex itaque esse est vero natus quae optio aperiam soluta voluptatibus corporis atque iste neque sit tempora!</p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Ljubljana castle [100%x225]" src="assets/img/castle.png" data-holder-rendered="true">
+                                <div class="text-overlay">Ljubljana Castle</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Ljubljana Castle is a castle complex standing on Castle Hill above downtown Ljubljana, the capital of Slovenia. It is a key landmark of the town. It was constructed in the 11th century and rebuilt in the 12th century.</p >
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/cave.png" data-holder-rendered="true">
+                                <div class="text-overlay">Postojna Cave</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Postojna Cave is a 24.34 km long karst cave system near Postojna, southwestern Slovenia. It is the second-longest cave system in the country as well as one of its top tourism sites. The caves were created by the Pivka River.</p >
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/dragon.png" data-holder-rendered="true">
+                                <div class="text-overlay">Dragon Bridge</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">The Dragon Bridge is a road bridge located in Ljubljana, the capital of Slovenia. It crosses the Ljubljanica River. between Kopitar Street and Ressel Street, to the north of the Ljubljana Central Market at Vodnik Square.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/bled.png" data-holder-rendered="true">
+                                <div class="text-overlay">Lake Bled</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Lake Bled is a lake in the Julian Alps of the Upper Carniolan region of northwestern Slovenia, where it adjoins the town of Bled. </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/tivoli.png" data-holder-rendered="true">
+                                <div class="text-overlay">Tivoli Park</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Tivoli City Park or simply Tivoli Park is the largest park in Ljubljana, the capital of Slovenia. It is located on the western outskirts of the Center District.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/piran.png" data-holder-rendered="true">
+                                <div class="text-overlay">Piran</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Piran is a resort city on Slovenia’s Adriatic coast, known for its long pier and Venetian architecture.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/predjama.png" data-holder-rendered="true">
+                                <div class="text-overlay">Predjama Castle</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Predjama Castle is a Renaissance castle built within a cave mouth in south-central Slovenia, in the historical region of Inner Carniola. It is located in the village of Predjama, approximately 11 kilometres from the town of Postojna and 9 kilometres from Postojna Cave. </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/gorge.png" data-holder-rendered="true">
+                                <div class="text-overlay">Vintgar Gorge</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Vintgar Gorge or Bled Gorge is a 1.6km gorge in northwestern Slovenia in the municipalities of Gorje and Bled, four km northwest of Bled. It is located on the edge of Triglav National Park. Carved by the Radovna River, it is the continuation of the Radovna Valley.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="image-container">
+                                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Postojna Cave [100%x225]" src="assets/img/bohinj.png" data-holder-rendered="true">
+                                <div class="text-overlay">Lake Bohinj</div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Lake Bohinj, covering 318 hectares, is the largest permanent lake in Slovenia. It is located within the Bohinj Valley of the Julian Alps, in the northwestern Upper Carniola region. The lake basin, which descends steeply, is not indented and is almost without shallows </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+              </div>
         </main>
         <!-- Footer-->
         <footer class="border-top">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <ul class="list-inline text-center">
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
+                        <div class="small text-center text-muted fst-italic">Copyright &copy; Jia Qian Zhang 2024 TU858/3</div>
                     </div>
                 </div>
             </div>
@@ -99,5 +272,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </body>
 </html>

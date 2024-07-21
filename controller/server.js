@@ -45,7 +45,6 @@ app.post('/signin', (req, res) => {
   const { email, password} = req.body;
   console.log(`Received signin request for email: ${email}`); // Log the received email
 
-
   // Call to login model with email and password
   model.signinModel(email, password, (result) => {
     // If the user logged in successfully
