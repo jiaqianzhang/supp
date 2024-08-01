@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -18,19 +19,19 @@
         .form-outline {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Space between the label and the input */
+            justify-content: space-between;
             margin-bottom: 40px;
             margin-top: 40px;
         }
 
         .form-label {
-            margin-right: auto; /* Align label to the left */
+            margin-right: auto;
             margin-left: 290px;
         }
 
         .form-control {
-            width: 280px; /* Adjust the width as needed */
-            margin-left: auto; /* Align input to the right */
+            width: 280px;
+            margin-left: auto;
             margin-right: 290px;
             border-radius: 5px;
         }
@@ -39,71 +40,70 @@
             border-radius: 5px;
         }
 
-        /* Mobile Styles */
         @media (max-width: 768px) {
             .form-outline {
-                flex-direction: column; /* Stack elements vertically */
-                align-items: flex-start; /* Align items to the start */
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .form-label {
                 margin-left: 20px;
                 margin-right: 20px;
-                margin-bottom: 10px; /* Add space below the label */
+                margin-bottom: 10px;
             }
 
             .form-control {
-                width: calc(100% - 40px); /* Adjust width to fit the container with padding */
+                width: calc(100% - 40px);
                 margin-left: 20px;
                 margin-right: 20px;
             }
         }
 
-        /* Additional adjustment for very small screens */
         @media (max-width: 480px) {
-            .form-label, .form-control {
+            .form-label,
+            .form-control {
                 margin-left: 10px;
                 margin-right: 10px;
             }
 
             .form-control {
-                width: calc(100% - 20px); /* Adjust width for smaller padding */
+                width: calc(100% - 20px);
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="index.html">Touring in Slovenia</a>
+            <a class="navbar-brand" href=" ">Touring in Slovenia</a >
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="index.html">Home</a>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a >
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="attraction.html">Attraction</a>
+                        <a class="nav-link" href="attraction.html">Attraction</a >
                     </li>
                     <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="review.html" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Review
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="review.html">All review</a>
-                        <a class="dropdown-item" href="addpost.html">Add post</a>
-                      </div>
+                        <a class="nav-link dropdown-toggle" href="review.html" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Review
+                        </a >
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="review.html">All review</a >
+                            <a class="dropdown-item" href="addpost.html">Add post</a >
+                        </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="signin.html">Sign in</a>
-                      </li>
-                  </ul>
-                </div>
-              </nav>
+                        <a class="nav-link" id="auth-link"></a >
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
     <!-- Page Header-->
@@ -119,27 +119,27 @@
                                 <label class="form-label" for="loginName">Email</label>
                                 <input type="email" id="loginName" name="email" class="form-control" required />
                             </div>
-                    
+
                             <!-- Password input -->
                             <div data-mdb-input-init class="form-outline">
                                 <label class="form-label" for="loginPassword">Password</label>
                                 <input type="password" id="loginPassword" name="password" class="form-control" required />
                             </div>
-                
+
                             <!-- Submit button -->
                             <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
-                    
+
                             <!-- Register buttons -->
                             <div class="text-center">
-                                <p>Do not have an account? Click here to <a href="register.html">register</a></p>
+                                <p>Do not have an account? Click here to <a href="register.html">register</a ></p >
                             </div>
                         </div>
                     </form>
-                </div> 
+                </div>
             </div>
         </div>
     </header>
-   
+
     <!-- Footer-->
     <footer class="border-top">
         <div class="container px-4 px-lg-5">
@@ -155,69 +155,88 @@
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-
-    <script>
-        async function handleFormSubmit(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get form values
-            const email = document.getElementById('loginName').value;
-            const password = document.getElementById('loginPassword').value;
-
-            // Create the request payload
-            const payload = {
-                email: email,
-                password: password
-            };
-
-            try {
-                // Send POST request to the server
-                const response = await fetch('/signin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-
-                    // Check if the response contains necessary fields
-                    if (result.success && result.token) {
-                        // Set token as a cookie for 1 hour
-                        document.cookie = `token=${result.token}; max-age=${60 * 60}; path=/;`;
-                        console.log('Sign-in successful! Token:', result.token);
-                        alert("Sign in successful!")
-                        window.location.href = 'index.html'; // Redirect to the home page
-                    } else {
-                        console.error('Invalid response format:', result);
-                        alert('Sign-in failed. Invalid server response.');
-                    }
-                } else {
-                    // Handle errors
-                    const errorData = await response.json();
-                    alert(`Sign-in failed: ${errorData.message}`);
-                }
-            } catch (error) {
-                console.error('Error during sign-in:', error);
-                alert('An error occurred. Please try again.');
-            }
-        }
-
-    </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Custom Script for Changing Navbar Link -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async() => {
+            try {
+                const authLink = document.getElementById('auth-link');
+                const token = getCookie('token');
+                const response = await fetch('/dashboard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    credentials: 'include', // include token when sending
+                    body: JSON.stringify({}),
+                });
+                if (response.ok) 
+                {
+                    authLink.textContent = 'Account';
+                    authLink.href = 'dashboard.html';                    
+                } 
+                else {
+                    authLink.textContent = 'Sign in';
+                    authLink.href = 'signin.html';
+
+                } 
+            }
+            catch (error) 
+            {
+                console.error('Error:', error);
+            }
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        });
+
+
+        // send the cookies to server
+        // fetch the token from server
+
+        async function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const email = document.getElementById('loginName').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        // document.cookies =`token=${result.token}; path=/;`;
+                        // Successfully signed in
+                        const token = result.token; // token form result is set as token
+                        console.log('Token:', token); // log token
+
+                        document.cookie = `token=${result.token}; max-age=${24 * 60 * 60}; path=/;`; // Store the token in cookies, expire in a day
+                    
+                        console.log('Login successful.');
+                        window.location.href = 'dashboard.html'; // Redirect to dashboard
+                    } 
+                    else {
+                        // Handle sign-in failure
+                        alert(result.message || 'Sign-in failed. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again later.');
+                }
+        }
+    </script>
 </body>
+
 </html>
-
-<!--
-user signs in, creates cookies, sent as tokens from client signin.html/register.html to server.js
-navigation bar needs to fetch the token?? to be able to change the navigation bar from sign in to 'account' as dashboard??
-- this checks the navigation bar only changes after the user signs in
-- does the server need to send back the token to wherever the navigation bar needs?
-
-adding post only allow users that are logged in if not either redirect to the login page or tell them with a message saying you must log in first
-
--->

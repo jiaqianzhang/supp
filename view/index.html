@@ -42,7 +42,7 @@
                           </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="signin.html">Sign in</a>
+                            <a class="nav-link" id="auth-link"></a>
                           </li>
                       </ul>
                     </div>
@@ -139,77 +139,41 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Function to get a specific cookie by name
+            document.addEventListener('DOMContentLoaded', async() => {
+                try {
+                    const authLink = document.getElementById('auth-link');
+                    const token = getCookie('token');
+                    const response = await fetch('/dashboard', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        credentials: 'include', // include token when sending
+                        body: JSON.stringify({}),
+                    });
+                    if (response.ok) 
+                    {
+                        authLink.textContent = 'Account';
+                        authLink.href = 'dashboard.html';
+                    } 
+                    else {
+                        authLink.textContent = 'Sign in';
+                        authLink.href = 'signin.html';
+
+                    } 
+                }
+                catch (error) 
+                {
+                    console.error('Error:', error);
+                }
+                // Function to read a specific cookie value
                 function getCookie(name) {
                     const value = `; ${document.cookie}`;
                     const parts = value.split(`; ${name}=`);
                     if (parts.length === 2) return parts.pop().split(';').shift();
                 }
-    
-                // Retrieve token from cookie
-                const token = getCookie('token');
-                console.log('Token retrieved in index.html:', token);
-    
-                // Update the navigation link based on token presence
-                const signinLink = document.getElementById('nav-signin');
-                if (token) {
-                    signinLink.textContent = 'Account'; // Example: Change text to "Profile"
-                    signinLink.href = 'account.html'; // Example: Change href to profile page
-                } else {
-                    signinLink.textContent = 'Sign in'; // Reset to "Sign in" if token is absent
-                    signinLink.href = 'signin.html'; // Example: Reset href to signin page
-                }
-    
-                // Use the token in subsequent requests (e.g., fetch data from server)
-                // should i fetch the token at the route signin or register??????
-                if (token) {
-                    fetch('/signin', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                    .then(response => {
-                        console.log('Response status:', response.status);
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error('Failed to fetch data');
-                        } 
-                    })
-                    .then(data => {
-                        console.log('Data fetched successfully:', data);
-                        // Handle data accordingly (e.g., update UI)
-                        // update the navigation bar to show account instead signin 
-                        const postsContainer = document.getElementById('posts-container');
-                        if (data && data.posts) {
-                            data.posts.forEach(post => {
-                                const postElement = document.createElement('div');
-                                /// rewrite this, not correct
-                                postElement.innerHTML = `
-                                    <div class="post-preview">
-                                        <a href="post.html">
-                                            <h2 class="post-title">${post.title}</h2>
-                                            <h3 class="post-subtitle">${post.subtitle}</h3>
-                                        </a>
-                                        <p class="post-meta">
-                                            Posted by
-                                            <a href="#!">${post.author}</a>
-                                            on ${post.date}
-                                        </p>
-                                    </div>
-                                    <hr class="my-4" />
-                                `;
-                                postsContainer.appendChild(postElement);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                        // Handle error
-                    });
 
-                }
             });
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

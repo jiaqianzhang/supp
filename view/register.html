@@ -64,7 +64,7 @@
                       </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="signin.html">Sign in</a>
+                        <a class="nav-link" id="auth-link"></a >
                       </li>
                   </ul>
                 </div>
@@ -112,6 +112,44 @@
     </header>
 
     <script>
+        document.addEventListener('DOMContentLoaded', async() => {
+            try {
+                const authLink = document.getElementById('auth-link');
+                const token = getCookie('token');
+                const response = await fetch('/dashboard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    credentials: 'include', // include token when sending
+                    body: JSON.stringify({}),
+                });
+                if (response.ok) 
+                {
+                    authLink.textContent = 'Account';
+                    authLink.href = 'dashboard.html';
+                } 
+                else {
+                    authLink.textContent = 'Sign in';
+                    authLink.href = 'signin.html';
+
+                } 
+            }
+            catch (error) 
+            {
+                console.error('Error:', error);
+            }
+
+                        // Function to read a specific cookie value
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        });
+
+        
         async function handleFormSubmit(event) {
             event.preventDefault(); // Prevent the default form submission
 
@@ -147,7 +185,7 @@
                     const result = await response.json();
                     document.cookie = `token=${result.token}; max-age=${24 * 60 * 60}; path=/;`; // Set token as a cookie for 1 day
                     alert("Registration successful!");
-                    window.location.href = 'index.html'; // Redirect to the home page
+                    window.location.href = 'dashboard.html'; // Redirect to the home page
                 } else {
                     // Handle errors
                     const errorData = await response.json();
@@ -159,18 +197,6 @@
             }
         }
 
-        // Function to read a specific cookie value
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        // Example usage: Get the token from cookies
-        const token = getCookie('token');
-        if (token) {
-            console.log('Token from cookies:', token);
-        }
     </script>
    
     <!-- Footer-->
