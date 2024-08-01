@@ -15,3 +15,5 @@ const addPostModel = async (postTitle, postDescription, postFile, postAccountEma
 };
 
 module.exports = addPostModel;
+
+
