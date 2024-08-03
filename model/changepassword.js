@@ -4,73 +4,65 @@ const bcrypt = require('bcrypt');
 const validatePassword = (password) => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ !"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])[A-Za-z\d !"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]{8,}$/;
   return passwordRegex.test(password);
-    
 };
 
-const changePasswordModel = function(email, oldPassword, newPassword, response) {
-    pool.connect(function (err) {
-        if (err) {
-            console.error("Error connecting to the database:", err);
-            return response(err, null);
+const changePasswordModel = async function(email, oldPassword, newPassword, response) {
+    const client = await pool.connect();
+
+    try {
+        // // Ensure email is correctly handled
+        // if (typeof email === 'string') {
+        //     email = email.trim().toLowerCase();
+        // } else {
+        //     console.error('Email is not a string:', email);
+        //     return response({ error: 'Invalid email format' }, null);
+        // }
+
+        // console.log('Checking email in the database:', email);
+
+        // Fetch user details by email
+        const selectSql = 'SELECT account_id, account_password FROM account WHERE account_email = $1';
+        const selectResults = await client.query(selectSql, [email]);
+
+        console.log('Select query results:', selectResults.rows);
+
+        if (selectResults.rows.length === 0) {
+            return response({ error: 'User not found' }, null);
         }
 
-        const selectSql = 'SELECT account_id, account_password FROM account WHERE account_email = $1';
-        pool.query(selectSql, [email], function (err, selectResults) {
-            if (err) {
-                console.error("Error executing SELECT query:", err);
-                return response(err, null);
-            }
+        const accountId = selectResults.rows[0].account_id;
+        const currentPassword = selectResults.rows[0].account_password;
 
-            if (selectResults.rows.length === 0) {
-                return response({ error: 'User not found' }, null);
-            }
+        // Compare old password
+        const isMatch = await bcrypt.compare(oldPassword, currentPassword);
+        if (!isMatch) {
+            return response({ error: 'Incorrect old password' }, null);
+        }
 
-            const accountId = selectResults.rows[0].account_id;
-            const currentPassword = selectResults.rows[0].account_password;
+        // Validate new password
+        if (!validatePassword(newPassword)) {
+            return response({ error: 'New password does not meet the criteria' }, null);
+        }
 
-            // Compare the provided old password with the stored password
-            bcrypt.compare(oldPassword, currentPassword, function (err, isMatch) {
-                if (err) {
-                    console.error('Error comparing passwords:', err);
-                    return response(err, null);
-                }
+        // Hash new password
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(newPassword, saltRounds);
 
-                if (!isMatch) {
-                    return response({ error: 'Incorrect old password' }, null);
-                }
+        // Update password
+        const updateSql = 'UPDATE account SET account_password = $1 WHERE account_id = $2';
+        const updateResults = await client.query(updateSql, [hash, accountId]);
 
-                if (!newPassword) {
-                    return response({ error: 'New password is null or undefined' }, null);
-                }
-
-                if (!validatePassword(newPassword)) {
-                    return response({ error: 'New password does not meet the criteria' }, null);
-                }
-
-                const saltRounds = 10;
-                bcrypt.hash(newPassword, saltRounds, function (err, hash) {
-                    if (err) {
-                        console.error('Error hashing new password:', err);
-                        return response(err, null);
-                    }
-
-                    const updateSql = 'UPDATE account SET account_password = $1 WHERE account_id = $2';
-                    pool.query(updateSql, [hash, accountId], function (err, updateResults) {
-                        if (err) {
-                            console.error("Error executing UPDATE query:", err);
-                            return response(err, null);
-                        } else {
-                            if (updateResults.rowCount === 0) {
-                                return response({ error: 'User not found' }, null);
-                            } else {
-                                return response(null, { success: true });
-                            }
-                        }
-                    });
-                });
-            });
-        });
-    });
-}
+        if (updateResults.rowCount === 0) {
+            return response({ error: 'Failed to update password' }, null);
+        } else {
+            return response(null, { success: true });
+        }
+    } catch (err) {
+        console.error("Error changing password:", err);
+        return response({ error: 'Internal Server Error' }, null);
+    } finally {
+        client.release();
+    }
+};
 
 module.exports = changePasswordModel;

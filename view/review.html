@@ -26,7 +26,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href=" ">Touring in Slovenia</a >
+            <a class="navbar-brand" href="index.html">Touring in Slovenia</a >
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
@@ -76,7 +76,41 @@
                 </h2>
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                     <div class="accordion-body">
-                        <p>All reviews will be displayed here. This section is a placeholder.</p >
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <h3 class="mb-0">Beautiful lake in Slovenia - The_Travel_Family on July 27, 2024</h3>
+                            <p class="card-text mb-auto">Another beautiful lake in Slovenia. Some tips watch out for parking as some only give maximum 2 hours. Get a boat across the lake and hike back. Do this early as all the small private beach spots along the lake get taken. Take a dip, it's very refreshing. Enjoy.</p >
+                            <div class="col-auto mt-3">
+                                <img src="assets/img/image.png" alt="Review Image" style="width: 50%; height: auto;">
+                            </div>
+                        </div>
+
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <h3 class="mb-0">Amazing caves - PacoDaTurtle on August 1, 2024</h3>
+                            <p class="card-text mb-auto">Amazing caves, really big
+                                The Zoo is not worth a visit unless you are really into cave reptiles and bugs.
+                                4-5 restaurants to eat at.
+                                Remedier some Cash for parring... around 6 euros.</p >
+                            <div class="col-auto mt-3">
+                                <img src="assets/img/image1.png" alt="Review Image" style="width: 50%; height: auto;">
+                            </div>
+                        </div>
+
+
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <h3 class="mb-0">Great short break to Bled & Ljubljana - Howard M on July 30, 2024</h3>
+                            <p class="card-text mb-auto">Absolutely fabulous place. Can walk around the lake, can do summer toboggan ride, zip wiring and nearby is the Vintgar Gorge which is very a well organised walk above and alongside the white water rapids. Need to be fit to get back although they run a shuttle service. Nice restaurants in Bled too.</p >
+                            <div class="col-auto mt-3">
+                                <img src="assets/img/image2.png" alt="Review Image" style="width: 50%; height: auto;">
+                            </div>
+                        </div>
+
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <h3 class="mb-0">Piran is very fun - Liu Kang Lin on August 2, 2024</h3>
+                            <p class="card-text mb-auto">The food is so tasty and so much to do over there.</p >
+                            <div class="col-auto mt-3">
+                                <img src="assets/img/image3.png" alt="Review Image" style="width: 50%; height: auto;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,25 +141,11 @@
     <script src="js/scripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
-    
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2aagWV9vxVf6kqiqvTaoyJOWO_h-bpgc",
-            authDomain: "supp-c1e01.firebaseapp.com",
-            projectId: "supp-c1e01",
-            storageBucket: "supp-c1e01.appspot.com",
-            messagingSenderId: "978693849785",
-            appId: "1:978693849785:web:dfd8ed67016f11b5475168",
-            measurementId: "G-REKKVDD6XK"
-        };
-    
-        initializeApp(firebaseConfig);
-    
         document.addEventListener('DOMContentLoaded', async () => {
             const authLink = document.getElementById('auth-link');
             const reviewsContainer = document.getElementById('reviews-container');
             const token = getCookie('token');
-    
+
             try {
                 const authResponse = await fetch('/dashboard', {
                     method: 'POST',
@@ -136,7 +156,7 @@
                     credentials: 'include',
                     body: JSON.stringify({}),
                 });
-    
+
                 if (authResponse.ok) {
                     authLink.textContent = 'Account';
                     authLink.href = 'dashboard.html';
@@ -147,7 +167,7 @@
             } catch (error) {
                 console.error('Error checking authentication:', error);
             }
-    
+
             try {
                 const reviewsResponse = await fetch('/review', {
                     method: 'GET',
@@ -157,26 +177,26 @@
                     },
                     credentials: 'include',
                 });
-    
+
                 if (!reviewsResponse.ok) {
                     throw new Error(`HTTP error! Status: ${reviewsResponse.status}`);
                 }
-    
+
                 const reviews = await reviewsResponse.json();
-                console.log('Reviews:', reviews); 
-    
+                console.log('Reviews:', reviews);
+
                 if (!Array.isArray(reviews)) {
                     throw new TypeError('Expected reviews to be an array');
                 }
-    
+
                 reviewsContainer.innerHTML = '';
-    
+
                 reviews.forEach((review) => {
                     console.log('Review:', review);
-    
+
                     const title = review.post_title || 'No title';
                     const description = review.post_description || 'No description';
-    
+
                     let imagePath = 'default_image_path_here';
                     try {
                         let imageFile = review.post_file;
@@ -187,10 +207,11 @@
                     } catch (error) {
                         console.error('Error parsing image file path:', error);
                     }
-    
+
                     const reviewElement = document.createElement('div');
                     reviewElement.classList.add('row', 'g-0', 'border', 'rounded', 'overflow-hidden', 'flex-md-row', 'mb-4', 'shadow-sm', 'h-md-250', 'position-relative');
-    
+                    reviewElement.setAttribute('data-post-id', review.post_id); // Set the post_id as a data attribute
+
                     reviewElement.innerHTML = `
                         <div class="col p-4 d-flex flex-column position-static">
                             <h3 class="mb-0">${title}</h3>
@@ -198,90 +219,63 @@
                             <div class="col-auto mt-3">
                                 <img src="${imagePath}" alt="Review Image" style="width: 50%; height: auto;">
                             </div>
-                            <div class="mt-3">
-                                <button class="btn btn-primary me-2" onclick="editReview('${review.post_id}', '${title}', '${description}', '${imagePath}')">Edit</button>
-                                <button class="btn btn-danger" onclick="deleteReview('${review.post_id}')">Delete</button>
-                            </div>
                         </div>
                     `;
-    
+
                     reviewsContainer.appendChild(reviewElement);
                 });
             } catch (error) {
                 console.error('Error loading reviews:', error);
             }
         });
-    
+
         function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
-    
-        window.deleteReview = async function(post_id) {
-            const token = getCookie('token');
-    
-            try {
-                const response = await fetch(`/review/${post_id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    credentials: 'include',
-                });
-    
-                if (response.ok) {
-                    alert('Review deleted successfully');
-                    location.reload();
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to delete review');
-                }
-            } catch (error) {
-                console.error('Error deleting review:', error);
-                alert('Error deleting review. Please try again.');
-            }
-        }
-    
-        window.editReview = async function(post_id, title, description, fileUrl) {
-            const newTitle = prompt('Enter new title:', title);
-            const newDescription = prompt('Enter new description:', description);
-            const newFileUrl = prompt('Enter new file URL:', fileUrl);
-    
-            if (newTitle && newDescription && newFileUrl) {
-                const token = getCookie('token');
-    
-                try {
-                    const response = await fetch(`/review/${post_id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            title: newTitle,
-                            description: newDescription,
-                            file_url: newFileUrl,
-                        }),
-                    });
-    
-                    if (response.ok) {
-                        alert('Review updated successfully');
-                        location.reload();
-                    } else {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to update review');
-                    }
-                } catch (error) {
-                    console.error('Error updating review:', error);
-                    alert('Error updating review. Please try again.');
-                }
-            } else {
-                alert('All fields are required to update the review.');
-            }
-        }
+
+        // window.deleteReview = async function(post_id) {
+        //     console.log('Attempting to delete review with postId:', post_id);
+
+        //     const token = getCookie('token');
+
+        //     if (!post_id) {
+        //         console.error('Error: postId is undefined.');
+        //         alert('Error: postId is undefined.');
+        //         return;
+        //     }
+
+        //     try {
+        //         const response = await fetch(`/review`, {
+        //             method: 'DELETE',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`,
+        //             },
+        //             credentials: 'include',
+        //             body: JSON.stringify({ post_id }), // Sending post_id in the body
+        //         });
+
+        //         if (response.ok) {
+        //             alert('Review deleted successfully');
+        //             // Remove the review from the DOM
+        //             const reviewElement = document.querySelector(`[data-post-id="${post_id}"]`);
+        //             if (reviewElement) {
+        //                 reviewElement.remove();
+        //             }
+        //         } else {
+        //             const errorData = await response.json();
+        //             throw new Error(errorData.error || 'Failed to delete review');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error deleting review:', error);
+        //         alert('Error deleting review. Please try again.');
+        //     }
+        // }
     </script>
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

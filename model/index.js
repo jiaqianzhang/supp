@@ -6,8 +6,7 @@ var deleteAccountModel = require('./deleteaccount');
 const selectModel = require('./select');
 var addPostModel = require('./addpost');
 const reviewModel = require('./review');
-const deleteReviewModel = require('./deletereview');
-const updateReviewModel = require('./updatereview');
+// const deleteReviewModel = require('./deletereview');
 
 module.exports = 
 {
@@ -18,6 +17,5 @@ module.exports =
     selectModel,
     addPostModel,
     reviewModel,
-    deleteReviewModel,
-    updateReviewModel
+    // deleteReviewModel,
 };

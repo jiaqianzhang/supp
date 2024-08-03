@@ -28,7 +28,7 @@ const signinModel = function(email, password, callback) {
             }
             if (isMatch) {
                 // Include account_id in the response
-                callback({ success: true, message: 'Sign in successful', user: { email: user.account_email, account_id: user.account_id } });
+                callback({ success: true, message: 'Sign in successful', user: { account_id: user.account_id, email: user.account_email } });
             } else {
                 callback({ success: false, message: 'Invalid password' });
             }

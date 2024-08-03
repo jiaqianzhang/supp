@@ -44,7 +44,7 @@ async function registerModel(email, password, callback) {
 
         if (newUser.rows.length > 0) {
             const { account_id } = newUser.rows[0];
-            return callback({ success: true, email: email, account_id: account_id, message: "Register successful" });
+            return callback({ success: true, account_id: account_id, email: email,  message: "Register successful" });
         } else {
             return callback({ success: false, message: "Registration failed" });
         }

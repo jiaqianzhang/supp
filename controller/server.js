@@ -41,7 +41,7 @@ app.post('/signin', (req, res) => {
   model.signinModel(email, password, (result) => {
     if (result.success) {
       const { account_id } = result.user; // Ensure `user` contains `account_id`
-      const token = jwt.sign({ email: email, account_id: account_id }, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign({ account_id: account_id, email: email, }, secretKey, { expiresIn: '1h' });
       req.session.token = token;
       res.cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true, path: '/' });
       res.json({ success: true, email: email, token });
@@ -60,7 +60,7 @@ app.post('/register', (req, res) => {
   model.registerModel(email, password, (result) => {
     if (result.success) {
       const { account_id } = result; // Ensure `result` contains `account_id`
-      const token = jwt.sign({ email: email, account_id: account_id }, secretKey, { expiresIn: '6h' });
+      const token = jwt.sign({ account_id: account_id, email: email, }, secretKey, { expiresIn: '6h' });
       req.session.token = token;
       res.cookie('token', token, { maxAge: 60 * 60 * 6000, httpOnly: true, path: '/' });
       res.json({ success: true, email: email, account_id: account_id, token });
@@ -146,41 +146,58 @@ app.post("/logout", (req, res) => {
 
 // UPDATE PASSWORD POST REQUEST
 app.post("/changepassword", (req, res) => {
-  console.log('Request Body:', req.body);
-  const email = req.session.user;
-  console.log('New Password Value:', req.body.newPassword);
+  const token = req.session.token;
 
-  model.changePasswordModel(email, req.body.oldPassword, req.body.newPassword, (err, result) => {
-    if (err) {
-      console.error('Error changing password:', err);
-      res.status(500).send('Internal Server Error');
-    } else if (result && result.success) {
-      console.log('Password changed successfully.');
-      res.send(result);
-    } else {
-      console.error('Error changing password. User not found.');
-      res.status(404).send('User not found');
-    }
-  });
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, secretKey);
+    const accountId = decodedToken.email;
+
+    model.changePasswordModel(accountId, req.body.oldPassword, req.body.newPassword, (err, result) => {
+      if (err) {
+        console.error('Error changing password:', err);
+        res.status(500).json({ error: 'Internal Server Error' }); // Ensure this is JSON
+      } else if (result && result.success) {
+        res.json(result); // Ensure this is JSON
+      } else {
+        res.status(404).json({ error: 'User not found' }); // Ensure this is JSON
+      }
+    });
+  } catch (error) {
+    console.error('Token verification failed:', error);
+    res.status(401).json({ error: 'Unauthorized' }); // Ensure this is JSON
+  }
 });
 
 // DELETE ACCOUNT POST REQUEST
 app.post("/deleteaccount", (req, res) => {
-  const email = req.session.user;
+  const token = req.session.token;
 
-  // clear token and account time life
-  model.deleteAccountModel(email, (err, result) => {
-    if (err) {
-      console.error('Error deleting account:', err);
-      res.status(500).send('Internal Server Error');
-    } else if (result && result.success) {
-      console.log('Delete account successfully.');
-      res.send(result);
-    } else {
-      console.error('Error deleting account. User not found.');
-      res.status(404).send('User not found');
-    }
-  });
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, secretKey);
+    const accountId = decodedToken.email;
+
+    model.deleteAccountModel(accountId, (err, result) => {
+      if (err) {
+        console.error('Error deleting account:', err);
+        res.status(500).send('Internal Server Error');
+      } else if (result && result.success) {
+        res.send(result);
+      } else {
+        res.status(404).send('User not found');
+      }
+    });
+  } catch (error) {
+    console.error('Token verification failed:', error);
+    res.status(401).json({ error: 'Unauthorized' });
+  }
 });
 
 app.use(cookieParser());
@@ -270,33 +287,6 @@ app.get('/review', async (req, res) => {
   } catch (error) {
       console.error('Error fetching reviews:', error);
       res.status(500).json({ error: 'Failed to fetch reviews' });
-  }
-});
-
-// New route for deleting a review
-app.delete('/review/:post_id', async (req, res) => {
-  const { post_id } = req.params;
-
-  try {
-    await model.deleteReviewModel(post_id);
-    res.status(200).json({ message: 'Review deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting review:', error);
-    res.status(500).json({ error: 'Failed to delete review' });
-  }
-});
-
-// New route for updating a review
-app.put('/review/:post_id', async (req, res) => {
-  const { post_id } = req.params;
-  const { title, description, file_url } = req.body;
-
-  try {
-    await model.updateReviewModel(post_id, title, description, file_url);
-    res.status(200).json({ message: 'Review updated successfully' });
-  } catch (error) {
-    console.error('Error updating review:', error);
-    res.status(500).json({ error: 'Failed to update review' });
   }
 });
 
