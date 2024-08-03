@@ -12,5 +12,5 @@ create table post(
     post_title varchar(50),
     post_description varchar(200),
     post_file varchar(200),
-    account_id varchar(200) references account(account_email)
+    post_account_id int references account(account_id)
 );
