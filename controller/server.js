@@ -1,9 +1,11 @@
 const express = require("express");
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const app = express();
 const model = require('../model/index'); // Assuming your model file is in the correct path
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
+const app = express();
 
 // Define the path to the static assets (CSS, JavaScript, images, etc.)
 const staticPath = path.join(__dirname, '../view/');
@@ -38,8 +40,8 @@ app.post('/signin', (req, res) => {
   // Call to login model with email and password
   model.signinModel(email, password, (result) => {
     if (result.success) {
-      const token = jwt.sign({ email: email }, secretKey, { expiresIn: '1h' });
-      req.session.user = email;
+      const { account_id } = result.user; // Ensure `user` contains `account_id`
+      const token = jwt.sign({ email: email, account_id: account_id }, secretKey, { expiresIn: '1h' });
       req.session.token = token;
       res.cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true, path: '/' });
       res.json({ success: true, email: email, token });
@@ -57,10 +59,11 @@ app.post('/register', (req, res) => {
 
   model.registerModel(email, password, (result) => {
     if (result.success) {
-      const token = jwt.sign({ email: email }, secretKey, { expiresIn: '6h' });
+      const { account_id } = result; // Ensure `result` contains `account_id`
+      const token = jwt.sign({ email: email, account_id: account_id }, secretKey, { expiresIn: '6h' });
       req.session.token = token;
       res.cookie('token', token, { maxAge: 60 * 60 * 6000, httpOnly: true, path: '/' });
-      res.json({ success: true, email: email, token });
+      res.json({ success: true, email: email, account_id: account_id, token });
       console.log('Token set in session:', req.session.token);
       console.log('Token set in cookie:', token);
     } else {
@@ -180,46 +183,136 @@ app.post("/deleteaccount", (req, res) => {
   });
 });
 
+app.use(cookieParser());
 // ADD POST REQUEST
-// verify and decode the token to extract user information
-// extract user email from the decoded token
-// initialise req.body to information
-// call model and send response back to client
-app.post('/addpost', (req, res) => {
+app.post('/addpost', async (req, res) => {
   const token = req.session.token;
-  // const post_account_id = req.session.id;
 
-  if (!token) {
+  // Check for the presence of the token
+  if (!token || token === 'null') {
+    console.error('Token is missing or null in the authorization header');
     return res.status(401).json({ error: 'Unauthorized access' });
   }
+
+  console.log('Token received:', token);
+
+  // Log the entire request headers for debugging
+  console.log('Request Headers:', req.headers);
+
+  // Decode the token without verification to inspect its structure
+  const decodedWithoutVerify = jwt.decode(token, { complete: true });
+  console.log('Decoded Token Without Verification:', decodedWithoutVerify);
 
   try {
     // Verify the token
     const decodedToken = jwt.verify(token, secretKey);
-    const post_account_email = decodedToken.email; // Assuming account_id is stored in the token payload
+    console.log('Decoded Token:', decodedToken);
 
+    // Check if account_id is present in the token payload
+    if (!decodedToken.account_id) {
+      console.error('account_id is missing in the token payload');
+      return res.status(400).json({ error: 'account_id is missing in the token payload' });
+    }
+
+    const postAccountId = decodedToken.account_id;
     const { post_title, post_description, post_file } = req.body;
 
-    // Validate input
-    if (!post_title || !post_description) {
-      return res.status(400).json({ error: 'Title and description are required' });
+    // Validate input fields
+    if (!post_title || !post_description || !post_file) {
+      console.error('Validation error: Title, description, and file URL are required');
+      return res.status(400).json({ error: 'Title, description, and file URL are required' });
     }
 
     // Call the model function to add the post
-    model.addPostModel(post_title, post_description, post_file, post_account_email, (req, res))
-      .then(newPost => {
-        res.status(201).json(newPost);
-      })
-      .catch(error => {
-        console.error('Error adding post:', error);
-        res.status(500).json({ error: 'Failed to add post' });
-      });
+    const newPost = await model.addPostModel(post_title, post_description, post_file, postAccountId);
+    res.status(201).json(newPost);
 
   } catch (error) {
-    console.error('Token verification failed:', error);
-    return res.status(401).json({ error: 'Unauthorized access' });
+    // Handle JWT verification errors
+    if (error instanceof jwt.JsonWebTokenError) {
+      console.error('JWT Verification Error:', error.message);
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    // Handle other errors
+    console.error('Error adding post:', error);
+    return res.status(500).json({ error: 'Failed to add post' });
   }
 });
+
+app.get('/review', async (req, res) => {
+  const token = req.session.token;
+
+  // Check for the presence of the token
+  if (!token || token === 'null') {
+      console.error('Token is missing or null in the authorization header');
+      return res.status(401).json({ error: 'Unauthorized access' });
+  }
+
+  try {
+      // Verify the token
+      const decodedToken = jwt.verify(token, secretKey);
+      console.log('Decoded Token:', decodedToken);
+
+      if (!decodedToken.account_id) {
+          console.error('account_id is missing in the token payload');
+          return res.status(400).json({ error: 'account_id is missing in the token payload' });
+      }
+
+      const post_account_id = decodedToken.account_id;
+      const userReviews = await model.reviewModel(post_account_id);
+
+      // Ensure the response is an array
+      if (!Array.isArray(userReviews)) {
+          throw new TypeError('Expected userReviews to be an array');
+      }
+
+      res.json(userReviews);
+  } catch (error) {
+      console.error('Error fetching reviews:', error);
+      res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+// New route for deleting a review
+app.delete('/review/:post_id', async (req, res) => {
+  const { post_id } = req.params;
+
+  try {
+    await model.deleteReviewModel(post_id);
+    res.status(200).json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    res.status(500).json({ error: 'Failed to delete review' });
+  }
+});
+
+// New route for updating a review
+app.put('/review/:post_id', async (req, res) => {
+  const { post_id } = req.params;
+  const { title, description, file_url } = req.body;
+
+  try {
+    await model.updateReviewModel(post_id, title, description, file_url);
+    res.status(200).json({ message: 'Review updated successfully' });
+  } catch (error) {
+    console.error('Error updating review:', error);
+    res.status(500).json({ error: 'Failed to update review' });
+  }
+});
+
+
+app.get('/firebase-config', (req, res) => {
+  res.json({
+      apiKey: "AIzaSyC2aagWV9vxVf6kqiqvTaoyJOWO_h-bpgc",
+      authDomain: "supp-c1e01.firebaseapp.com",
+      projectId: "supp-c1e01",
+      storageBucket: "supp-c1e01.appspot.com",
+      messagingSenderId: "978693849785",
+      appId: "1:978693849785:web:dfd8ed67016f11b5475168",
+      measurementId: "G-REKKVDD6XK"
+  });
+});
+
 
 // Route to serve index.html for all GET requests
 app.get('*', (req, res) => {

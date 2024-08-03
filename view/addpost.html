@@ -76,6 +76,23 @@
             }
         }
     </style>
+    <!-- Firebase Configuration -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-storage-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2aagWV9vxVf6kqiqvTaoyJOWO_h-bpgc",
+            authDomain: "supp-c1e01.firebaseapp.com",
+            projectId: "supp-c1e01",
+            storageBucket: "supp-c1e01.appspot.com",
+            messagingSenderId: "978693849785",
+            appId: "1:978693849785:web:dfd8ed67016f11b5475168",
+            measurementId: "G-REKKVDD6XK"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
 </head>
 <body>
     <!-- Navigation-->
@@ -124,6 +141,7 @@
         </div>
     </header>
 </body>
+
 <main>
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -173,12 +191,12 @@
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         try {
             const authLink = document.getElementById('auth-link');
-            const token = getCookie('token');
+            const token = getCookie('token'); // get token from cookies
             const response = await fetch('/dashboard', {
                 method: 'POST',
                 headers: {
@@ -199,44 +217,80 @@
         } catch (error) {
             console.error('Error:', error);
         }
-
-        // Function to read a specific cookie value
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
     });
 
-
-    // send data to server, get token from cookies
-    // authorization bearer token
-
-    // Form submission handling
+    // Function to handle form submission
     async function handleFormSubmit(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault(); // Prevent form submission
+        const files = document.getElementById('formFileMultiple').files; // Get files from input
+        const storageRef = firebase.storage().ref(); // Get a reference to the Firebase Storage service
+        const promises = []; // Create an array to hold the promises for file uploads
 
-            const title = document.getElementById('postTitle').value;
-            const description = document.getElementById('postDescription').value;
-            const file = document.getElementById('formFileMultiple').value;
-            
-            try {
-                const response = await fetch('/addpost', {
-                    method: 'POST',
-                    body: JSON.stringify({title, description, file}),
-                });
+        // Log the start of the upload process
+        console.log('Starting file upload process...');
 
-                if (response.ok) {
-                    alert('Post added successfully!');
-                    form.reset();
-                } else {
-                    alert('Failed to add post.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while adding the post.');
-            }
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i]; // Get the current file
+            console.log(`Uploading file: ${file.name}`); // Log the file name being uploaded
+            const fileRef = storageRef.child('uploads/' + file.name); // Create a reference to the file in Firebase Storage
+            const uploadTask = fileRef.put(file); // Upload the file to Firebase Storage
+
+            // Add a promise to the array to track the upload status
+            promises.push(
+                uploadTask.then((snapshot) => {
+                    console.log(`File uploaded: ${file.name}`); // Log successful upload
+                    return snapshot.ref.getDownloadURL(); // Get the download URL for the uploaded file
+                })
+            );
         }
+
+        try {
+            const downloadURLs = await Promise.all(promises); // Wait for all file uploads to complete
+            console.log('File(s) uploaded successfully:', downloadURLs); // Log the download URLs for the uploaded files
+
+            const token = getCookie('token'); // Get token from cookies
+            const postTitle = document.getElementById('postTitle').value;
+            const postDescription = document.getElementById('postDescription').value;
+
+            const formData = {
+                post_title: postTitle,
+                post_description: postDescription,
+                post_file: downloadURLs, // Include file URLs in the form data
+            };
+
+            const response = await fetch('/addpost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                credentials: 'include', // Include credentials in the request
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Post added successfully!');
+                window.location.href = 'review.html';
+                
+            } else {
+                alert('Failed to add post.');
+            }
+        } catch (error) {
+            console.error('Error uploading file(s) or adding post:', error); // Log any errors that occur during the upload process
+            alert('An error occurred while uploading file(s) or adding the post: ' + error.message); // Display an error message to the user
+        }
+    }
+
+    // Function to read a specific cookie value
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const token = parts.pop().split(';').shift();
+            console.log(`Retrieved token: ${token}`); // Debugging line
+            return token;
+        }
+        return null;
+    }
 </script>
 </html>
